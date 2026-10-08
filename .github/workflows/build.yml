@@ -7,20 +7,25 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: 21
+
       - name: Unzip source
         run: unzip -q ASTRIX-v29.zip
+
       - name: Patch sound call
         run: |
-          sed -i 's/SoundEvents\.BLOCK_NOTE_BLOCK_PLING, 1\.0f, volume/SoundEvents.BLOCK_NOTE_BLOCK_PLING.value(), 1.0f, volume/' \
+          sed -i 's|mc\.getSoundManager()\.play(PositionedSoundInstance\.master([^;]*;|if (mc.player != null) mc.player.playSound(SoundEvents.BLOCK_NOTE_BLOCK_PLING.value(), volume, 1.0f);|' \
             ASTRIX-v29/kripsy-debug/src/main/java/dev/kripsydebug/modules/KripsyDebugPlus.java
           grep -n "BLOCK_NOTE_BLOCK_PLING" ASTRIX-v29/kripsy-debug/src/main/java/dev/kripsydebug/modules/KripsyDebugPlus.java
+
       - name: Build
         working-directory: ASTRIX-v29
         run: chmod +x gradlew && ./gradlew build --no-daemon
+
       - uses: actions/upload-artifact@v4
         with:
           name: astrix-debug
