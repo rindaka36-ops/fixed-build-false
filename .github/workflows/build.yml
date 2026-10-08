@@ -13,6 +13,11 @@ jobs:
           java-version: 21
       - name: Unzip source
         run: unzip -q ASTRIX-v29.zip
+      - name: Patch sound call
+        run: |
+          sed -i 's/SoundEvents\.BLOCK_NOTE_BLOCK_PLING, 1\.0f, volume/SoundEvents.BLOCK_NOTE_BLOCK_PLING.value(), 1.0f, volume/' \
+            ASTRIX-v29/kripsy-debug/src/main/java/dev/kripsydebug/modules/KripsyDebugPlus.java
+          grep -n "BLOCK_NOTE_BLOCK_PLING" ASTRIX-v29/kripsy-debug/src/main/java/dev/kripsydebug/modules/KripsyDebugPlus.java
       - name: Build
         working-directory: ASTRIX-v29
         run: chmod +x gradlew && ./gradlew build --no-daemon
